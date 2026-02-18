@@ -1,3 +1,5 @@
+// API_URL: empty string uses relative paths (e.g., "/api/upload")
+// which are proxied to the backend by Next.js rewrites configuration
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export async function uploadCSV(file: File) {
