@@ -10,6 +10,7 @@ app.add_middleware(
         "http://localhost:3000",
         "http://frontend:3000",
     ],
+    allow_origin_regex=r"https://.*\.app\.github\.dev",  # Covers Codespaces dynamic URLs
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
