@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Data Upload &amp; Management - Sales Forecasting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b8cee",
+                        "primary-dark": "#1a6bbd",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-dark": "#1a2632",
+                        "surface-lighter": "#243240"
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #101922; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #243240; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2b8cee; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 bg-white dark:bg-surface-dark border-r border-slate-200 dark:border-slate-800 flex-shrink-0 hidden md:flex flex-col">
+<div class="h-16 flex items-center px-6 border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
+<span class="material-icons text-primary text-xl">insights</span>
+</div>
+<span class="font-bold text-lg tracking-tight">SalesCast</span>
+</div>
+</div>
+<nav class="flex-1 px-4 py-6 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/10 rounded-lg transition-colors group" href="#">
+<span class="material-icons text-xl group-hover:text-primary transition-colors">dashboard</span>
+<span class="font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-primary bg-primary/10 rounded-lg transition-colors group" href="#">
+<span class="material-icons text-xl">cloud_upload</span>
+<span class="font-medium">Data Upload</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/10 rounded-lg transition-colors group" href="#">
+<span class="material-icons text-xl group-hover:text-primary transition-colors">show_chart</span>
+<span class="font-medium">Forecasts</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/10 rounded-lg transition-colors group" href="#">
+<span class="material-icons text-xl group-hover:text-primary transition-colors">analytics</span>
+<span class="font-medium">Analysis</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary hover:bg-slate-50 dark:hover:bg-primary/10 rounded-lg transition-colors group" href="#">
+<span class="material-icons text-xl group-hover:text-primary transition-colors">settings</span>
+<span class="font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 px-3 py-2">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-purple-500 overflow-hidden relative">
+<img alt="User avatar" class="w-full h-full object-cover" data-alt="User profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJvVP2Pob7TUptKsEzioLcS91cKOZAtLMl54PVQ-pFjdyPKU9nerpVdXtznaX9ZyZQ31l1CjjGEN9bABunfxbf7VejhTS9MxMQWruTo2rBsSpKieaidNr_5tGYc4uNed-6Ez4GuB8PyVZSvfn7xZiwAzQ8slM1f3EfutUxa0xGml8hq-9g7gzaURM5BDGvRPBTfWqhQqVJSU-7_E_lFbiSNEmQ7bPu98hDTASagaPnWGY7TxiRbh834CQtPyKX0b_9ObZNwiyo9EkH"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium truncate">Alex Morgan</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 truncate">Senior Analyst</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- Top Navigation (Mobile/Tablet) & Header Actions -->
+<header class="h-16 bg-white dark:bg-surface-dark border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 lg:px-8">
+<div class="md:hidden flex items-center gap-2">
+<button class="p-2 -ml-2 text-slate-500 hover:text-primary rounded-lg">
+<span class="material-icons">menu</span>
+</button>
+<span class="font-bold text-lg">SalesCast</span>
+</div>
+<div class="hidden md:block">
+<h1 class="text-xl font-bold text-slate-900 dark:text-white">Upload Sales Data</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-400 hover:text-primary rounded-full hover:bg-slate-100 dark:hover:bg-surface-lighter transition-colors relative">
+<span class="material-icons">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white dark:border-surface-dark"></span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg text-sm font-medium transition-colors shadow-lg shadow-primary/20">
+<span class="material-icons text-sm">add</span>
+<span>New Project</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content Area -->
+<div class="flex-1 overflow-y-auto p-6 lg:p-8">
+<div class="max-w-6xl mx-auto space-y-8">
+<!-- Header Description -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Import Dataset</h2>
+<p class="text-slate-500 dark:text-slate-400 max-w-2xl">
+                            Upload your raw sales history files here. The system accepts CSV and Excel (.xlsx) formats. 
+                            Ensure your data includes columns for <code class="bg-slate-100 dark:bg-surface-lighter px-1.5 py-0.5 rounded text-xs font-mono text-primary">date</code>, <code class="bg-slate-100 dark:bg-surface-lighter px-1.5 py-0.5 rounded text-xs font-mono text-primary">sku</code>, and <code class="bg-slate-100 dark:bg-surface-lighter px-1.5 py-0.5 rounded text-xs font-mono text-primary">revenue</code>.
+                        </p>
+</div>
+<div class="flex gap-2">
+<button class="text-primary text-sm font-medium hover:underline flex items-center gap-1">
+<span class="material-icons text-sm">download</span> Download Template
+                        </button>
+</div>
+</div>
+<!-- Drag & Drop Zone -->
+<div class="relative group">
+<div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-blue-600 rounded-2xl opacity-20 group-hover:opacity-40 transition duration-500 blur"></div>
+<div class="relative w-full h-64 border-2 border-dashed border-slate-300 dark:border-slate-600 hover:border-primary dark:hover:border-primary rounded-xl bg-slate-50 dark:bg-surface-dark flex flex-col items-center justify-center transition-all duration-300 group-hover:bg-slate-100 dark:group-hover:bg-surface-lighter cursor-pointer">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+<span class="material-icons text-primary text-3xl">cloud_upload</span>
+</div>
+<h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-1">Drag &amp; drop files here</h3>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-6">or click to browse from your computer</p>
+<button class="px-6 py-2.5 bg-white dark:bg-surface-lighter border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary transition-all shadow-sm font-medium text-sm">
+                            Select Files
+                        </button>
+<p class="mt-4 text-xs text-slate-400">Supported formats: CSV, XLSX (Max 50MB)</p>
+</div>
+</div>
+<!-- Active Upload Progress -->
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+<span class="material-icons text-emerald-500">description</span>
+</div>
+<div>
+<h4 class="text-sm font-semibold text-slate-900 dark:text-white">Q4_Global_Sales_Draft.csv</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">12.5 MB • Uploading...</p>
+</div>
+</div>
+<button class="text-slate-400 hover:text-red-500 transition-colors">
+<span class="material-icons">close</span>
+</button>
+</div>
+<div class="relative w-full h-2 bg-slate-100 dark:bg-surface-lighter rounded-full overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-primary w-[65%] rounded-full animate-pulse"></div>
+</div>
+<div class="flex justify-between mt-2 text-xs text-slate-500 dark:text-slate-400">
+<span>65% completed</span>
+<span>~12s remaining</span>
+</div>
+</div>
+<!-- Recent Uploads Table -->
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Recent Uploads</h3>
+<div class="flex gap-2">
+<div class="relative">
+<span class="material-icons absolute left-3 top-2.5 text-slate-400 text-sm">search</span>
+<input class="pl-9 pr-4 py-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary w-64 placeholder-slate-400" placeholder="Search files..." type="text"/>
+</div>
+<button class="p-2 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 hover:text-primary transition-colors">
+<span class="material-icons text-sm">filter_list</span>
+</button>
+</div>
+</div>
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-surface-lighter border-b border-slate-200 dark:border-slate-700">
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">File Name</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Upload Date</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Records</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Status</th>
+<th class="py-4 px-6 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Row 1: Validated -->
+<tr class="hover:bg-slate-50 dark:hover:bg-surface-lighter/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<span class="material-icons text-slate-400">table_view</span>
+<span class="font-medium text-slate-900 dark:text-white">Q3_Sales_North.csv</span>
+</div>
+</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">Oct 24, 2023</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">45,200</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Validated
+                                            </span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Processing -->
+<tr class="hover:bg-slate-50 dark:hover:bg-surface-lighter/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<span class="material-icons text-slate-400">description</span>
+<span class="font-medium text-slate-900 dark:text-white">Q3_Sales_South_v2.xlsx</span>
+</div>
+</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">Oct 24, 2023</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">-</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Processing
+                                            </span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Error -->
+<tr class="hover:bg-slate-50 dark:hover:bg-surface-lighter/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<span class="material-icons text-slate-400">table_view</span>
+<span class="font-medium text-slate-900 dark:text-white">Legacy_Data_2022.csv</span>
+</div>
+</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">Oct 20, 2023</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">12,104</td>
+<td class="py-4 px-6">
+<div class="group/tooltip relative inline-flex">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-500 border border-red-500/20 cursor-help">
+<span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> Error
+                                                </span>
+<!-- Tooltip -->
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-slate-800 text-white text-xs rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-lg z-10 border border-slate-700">
+                                                    Missing 'Date' column in row 405
+                                                </div>
+</div>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Validated -->
+<tr class="hover:bg-slate-50 dark:hover:bg-surface-lighter/50 transition-colors group">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<span class="material-icons text-slate-400">table_view</span>
+<span class="font-medium text-slate-900 dark:text-white">FY22_Complete_Audit.csv</span>
+</div>
+</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">Sep 15, 2023</td>
+<td class="py-4 px-6 text-sm text-slate-500 dark:text-slate-400">108,920</td>
+<td class="py-4 px-6">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Validated
+                                            </span>
+</td>
+<td class="py-4 px-6 text-right">
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons text-lg">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-surface-lighter/20">
+<span class="text-xs text-slate-500 dark:text-slate-400">Showing 1-4 of 12 files</span>
+<div class="flex items-center gap-2">
+<button class="p-1 rounded-md text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-surface-lighter transition-colors disabled:opacity-50" disabled="">
+<span class="material-icons text-lg">chevron_left</span>
+</button>
+<button class="p-1 rounded-md text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-surface-lighter transition-colors">
+<span class="material-icons text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

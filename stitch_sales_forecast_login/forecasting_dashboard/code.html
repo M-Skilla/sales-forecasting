@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sales Forecasting Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b8cee",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for dark mode */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Chart grid lines */
+        .chart-grid-line {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-dasharray: 4;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 font-display min-h-screen flex overflow-hidden selection:bg-primary selection:text-white">
+<!-- Left Navigation Sidebar -->
+<aside class="w-20 lg:w-64 bg-white dark:bg-[#15202b] border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 transition-all duration-300 z-50">
+<div>
+<!-- Logo -->
+<div class="h-16 flex items-center justify-center lg:justify-start lg:px-6 border-b border-slate-200 dark:border-slate-800">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center text-white shrink-0">
+<span class="material-icons-round text-xl">insights</span>
+</div>
+<span class="hidden lg:block ml-3 font-bold text-xl tracking-tight">ForecastAI</span>
+</div>
+<!-- Navigation Links -->
+<nav class="mt-6 flex flex-col gap-1 px-2 lg:px-4">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary text-white shadow-lg shadow-primary/20 group relative overflow-hidden" href="#">
+<span class="material-icons-round z-10">dashboard</span>
+<span class="hidden lg:block font-medium z-10">Dashboard</span>
+<div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-primary transition-colors group" href="#">
+<span class="material-icons-round group-hover:text-primary transition-colors">analytics</span>
+<span class="hidden lg:block font-medium">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-primary transition-colors group" href="#">
+<span class="material-icons-round group-hover:text-primary transition-colors">model_training</span>
+<span class="hidden lg:block font-medium">Models</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-primary transition-colors group" href="#">
+<span class="material-icons-round group-hover:text-primary transition-colors">inventory_2</span>
+<span class="hidden lg:block font-medium">Products</span>
+</a>
+</nav>
+</div>
+<!-- Bottom Actions -->
+<div class="p-2 lg:p-4 border-t border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/50 hover:text-primary transition-colors group" href="#">
+<span class="material-icons-round group-hover:text-primary transition-colors">settings</span>
+<span class="hidden lg:block font-medium">Settings</span>
+</a>
+<div class="mt-4 flex items-center gap-3 px-3 lg:px-3 py-2">
+<div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-blue-400 overflow-hidden shrink-0">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a professional man in business attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlDMx3al1T1S9ubTMYkOs4-A_VMI_URg-pRRlXWYkTg4xA-44PBD_BgbBxnIrRyX9kLv1Mvb-E9amfNCVKtWf3f-DjR6mZwT8k6I_6Egc6p6bFAtKY5JDTw18YReNHCeTogJlfnm2NdNUbLWF1HpMyzRJEhcPSnfrBIoLfYwsIrprgGzkzLEdsbi1t3xDiPk2oOL-9revkADDczB7dCfK6zATRyJvjmXsBZCjA6uQ5FGWqeahRq3W6s45nrNXIb4mkN9c0lNTEF0ii"/>
+</div>
+<div class="hidden lg:block overflow-hidden">
+<p class="text-sm font-semibold truncate">Alex Morgan</p>
+<p class="text-xs text-slate-500 truncate">Lead Analyst</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- Top Header -->
+<header class="h-16 bg-white dark:bg-[#15202b]/50 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between px-6 shrink-0 z-40">
+<h1 class="text-lg font-bold flex items-center gap-2">
+<span class="text-slate-400 dark:text-slate-500 font-normal">Overview /</span> Sales Forecast Q4 2023
+            </h1>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-slate-100 dark:bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-200 dark:border-slate-700">
+<span class="material-icons-round text-slate-400 text-sm mr-2">calendar_today</span>
+<span class="text-sm font-medium">Oct 1, 2023 - Dec 31, 2023</span>
+<span class="material-icons-round text-slate-400 text-sm ml-2">arrow_drop_down</span>
+</div>
+<button class="relative p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-icons-round">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500"></span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto custom-scrollbar p-6">
+<div class="max-w-7xl mx-auto space-y-6">
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- KPI 1 -->
+<div class="bg-white dark:bg-[#15202b] p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Projected Monthly Revenue</p>
+<h3 class="text-3xl font-bold mt-1 text-slate-800 dark:text-white">$1,240,500</h3>
+</div>
+<div class="p-2 rounded-lg bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400">
+<span class="material-icons-round text-xl">trending_up</span>
+</div>
+</div>
+<div class="flex items-center text-sm">
+<span class="text-green-500 font-semibold mr-2">+12.5%</span>
+<span class="text-slate-400">vs last month</span>
+</div>
+<div class="absolute bottom-0 right-0 w-32 h-16 opacity-10 pointer-events-none">
+<svg class="w-full h-full fill-current text-primary" viewbox="0 0 100 50">
+<path d="M0 50 L20 30 L40 40 L60 20 L80 30 L100 10 V50 Z"></path>
+</svg>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="bg-white dark:bg-[#15202b] p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">Forecast Accuracy (MAPE)</p>
+<h3 class="text-3xl font-bold mt-1 text-slate-800 dark:text-white">94.5%</h3>
+</div>
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-icons-round text-xl">check_circle</span>
+</div>
+</div>
+<div class="flex items-center text-sm">
+<span class="text-primary font-semibold mr-2">+1.2%</span>
+<span class="text-slate-400">improvement</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="bg-white dark:bg-[#15202b] p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div>
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400">YoY Growth Rate</p>
+<h3 class="text-3xl font-bold mt-1 text-slate-800 dark:text-white">+8.3%</h3>
+</div>
+<div class="p-2 rounded-lg bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400">
+<span class="material-icons-round text-xl">show_chart</span>
+</div>
+</div>
+<div class="flex items-center text-sm">
+<span class="text-purple-500 font-semibold mr-2">+2.4%</span>
+<span class="text-slate-400">vs target</span>
+</div>
+</div>
+</div>
+<!-- Main Section: Chart & Parameters -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+<!-- Chart Container -->
+<div class="lg:col-span-3 bg-white dark:bg-[#15202b] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 flex flex-col h-[500px]">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h2 class="text-lg font-bold">Actual vs. Predicted Sales</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400">Revenue trend with 95% confidence interval</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-2 px-3 py-1 rounded bg-slate-100 dark:bg-slate-800 text-xs font-medium">
+<span class="w-2 h-2 rounded-full bg-slate-400"></span> Actual
+                                </div>
+<div class="flex items-center gap-2 px-3 py-1 rounded bg-slate-100 dark:bg-slate-800 text-xs font-medium">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Predicted
+                                </div>
+<button class="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors ml-2">
+<span class="material-icons-round text-slate-400">more_vert</span>
+</button>
+</div>
+</div>
+<!-- CSS Only Chart Representation -->
+<div class="flex-1 w-full relative">
+<!-- Y-Axis Labels -->
+<div class="absolute left-0 top-0 bottom-8 w-10 flex flex-col justify-between text-xs text-slate-400 text-right pr-2">
+<span>$150k</span>
+<span>$125k</span>
+<span>$100k</span>
+<span>$75k</span>
+<span>$50k</span>
+<span>$25k</span>
+</div>
+<!-- Chart Area -->
+<div class="absolute left-10 top-0 right-0 bottom-8 border-l border-b border-slate-200 dark:border-slate-700">
+<!-- Grid Lines -->
+<div class="w-full h-full flex flex-col justify-between">
+<div class="w-full h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="w-full h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="w-full h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="w-full h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="w-full h-px bg-slate-100 dark:bg-slate-700/50"></div>
+<div class="w-full h-px bg-slate-100 dark:bg-slate-700/50"></div>
+</div>
+<!-- Confidence Interval Area (Using SVG for complex shape) -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none">
+<!-- Confidence Shade -->
+<path d="M400,200 L450,180 L500,160 L550,170 L600,140 L650,130 L700,110 L750,90 L750,150 L700,170 L650,190 L600,210 L550,230 L500,240 L450,220 L400,200 Z" fill="rgba(43, 140, 238, 0.15)" stroke="none"></path>
+<!-- Actual Line (Solid White/Grey) -->
+<path d="M0,300 L50,280 L100,250 L150,260 L200,230 L250,210 L300,240 L350,220 L400,200" fill="none" stroke="#94a3b8" stroke-width="2"></path>
+<!-- Predicted Line (Primary Color, Dashed or Solid) -->
+<path d="M400,200 L450,180 L500,170 L550,180 L600,150 L650,140 L700,120 L750,100" fill="none" stroke="#2b8cee" stroke-width="3"></path>
+<!-- Prediction Point -->
+<circle cx="400" cy="200" fill="#2b8cee" r="4" stroke="white" stroke-width="2"></circle>
+<!-- Current Data Point Tooltip Indicator -->
+<line opacity="0.5" stroke="#475569" stroke-dasharray="4 4" stroke-width="1" x1="600" x2="600" y1="0" y2="350"></line>
+<circle class="animate-pulse" cx="600" cy="150" fill="#2b8cee" r="5"></circle>
+</svg>
+<!-- Floating Tooltip -->
+<div class="absolute top-[120px] left-[550px] bg-slate-800 dark:bg-slate-700 text-white p-3 rounded-lg shadow-xl text-xs z-10 border border-slate-600">
+<div class="font-bold mb-1">Nov 15, 2023</div>
+<div class="flex justify-between gap-4">
+<span class="text-slate-300">Predicted:</span>
+<span class="font-bold text-primary">$85,400</span>
+</div>
+<div class="flex justify-between gap-4 text-[10px] text-slate-400 mt-1">
+<span>Confidence:</span>
+<span>±5.2%</span>
+</div>
+</div>
+</div>
+<!-- X-Axis Labels -->
+<div class="absolute left-10 right-0 bottom-0 h-8 flex justify-between items-center text-xs text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-700">
+<span>Jan</span>
+<span>Feb</span>
+<span>Mar</span>
+<span>Apr</span>
+<span>May</span>
+<span>Jun</span>
+<span>Jul</span>
+<span>Aug</span>
+<span>Sep</span>
+<span class="text-primary font-bold">Oct</span>
+<span class="text-primary font-bold">Nov</span>
+<span class="text-primary font-bold">Dec</span>
+</div>
+</div>
+</div>
+<!-- Forecast Parameters Sidebar -->
+<div class="lg:col-span-1 bg-white dark:bg-[#15202b] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 flex flex-col h-auto">
+<div class="flex items-center gap-2 mb-6 text-slate-800 dark:text-white">
+<span class="material-icons-round text-primary">tune</span>
+<h3 class="font-bold">Parameters</h3>
+</div>
+<div class="space-y-6 flex-1">
+<!-- Input Group -->
+<div>
+<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Time Horizon</label>
+<select class="w-full bg-background-light dark:bg-background-dark border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+<option>Next 3 Months</option>
+<option>Next 6 Months</option>
+<option selected="">Next 12 Months</option>
+</select>
+</div>
+<!-- Input Group -->
+<div>
+<label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Algorithm Model</label>
+<select class="w-full bg-background-light dark:bg-background-dark border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+<option>ARIMA</option>
+<option selected="">Prophet (Meta)</option>
+<option>Exponential Smoothing</option>
+<option>LSTM Network</option>
+</select>
+</div>
+<!-- Slider Group -->
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Confidence Interval</label>
+<span class="text-xs font-bold text-primary">95%</span>
+</div>
+<input class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-primary" max="99" min="80" type="range" value="95"/>
+<div class="flex justify-between mt-1 text-[10px] text-slate-400">
+<span>80%</span>
+<span>99%</span>
+</div>
+</div>
+<!-- Toggles -->
+<div class="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700/50">
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Include Seasonality</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary/30 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</div>
+</label>
+<label class="flex items-center justify-between cursor-pointer group">
+<span class="text-sm text-slate-600 dark:text-slate-300 group-hover:text-primary transition-colors">Outlier Detection</span>
+<div class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary/30 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</div>
+</label>
+</div>
+</div>
+<button class="mt-6 w-full py-2.5 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-lg shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2">
+<span class="material-icons-round text-sm">refresh</span>
+                            Update Forecast
+                        </button>
+</div>
+</div>
+<!-- Bottom Section: Top Product Forecasts Table -->
+<div class="bg-white dark:bg-[#15202b] rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+<div class="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+<h3 class="font-bold text-lg">Top Product Forecasts</h3>
+<button class="text-primary hover:text-blue-400 text-sm font-medium flex items-center gap-1">
+                            View All <span class="material-icons-round text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm text-slate-600 dark:text-slate-400">
+<thead class="bg-slate-50 dark:bg-slate-800/50 text-xs uppercase font-semibold text-slate-500">
+<tr>
+<th class="px-6 py-4" scope="col">Product Name</th>
+<th class="px-6 py-4" scope="col">Current Sales</th>
+<th class="px-6 py-4" scope="col">Predicted (Q4)</th>
+<th class="px-6 py-4" scope="col">Trend</th>
+<th class="px-6 py-4" scope="col">Delta</th>
+<th class="px-6 py-4 text-right" scope="col">Confidence</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-800 dark:text-white flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+<span class="material-icons-round text-slate-500 text-sm">smartphone</span>
+</div>
+                                        iPhone 15 Pro Max
+                                    </td>
+<td class="px-6 py-4">$450,230</td>
+<td class="px-6 py-4 text-primary font-semibold">$512,000</td>
+<td class="px-6 py-4">
+<svg class="text-green-500" height="24" viewbox="0 0 60 24" width="60">
+<path d="M0 20 L10 15 L20 18 L30 10 L40 12 L50 5 L60 2" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</td>
+<td class="px-6 py-4 text-green-500 font-medium">+13.7%</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="text-xs">High</span>
+<div class="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-green-500 w-[92%] rounded-full"></div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-800 dark:text-white flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+<span class="material-icons-round text-slate-500 text-sm">laptop</span>
+</div>
+                                        MacBook Air M2
+                                    </td>
+<td class="px-6 py-4">$320,100</td>
+<td class="px-6 py-4 text-primary font-semibold">$345,500</td>
+<td class="px-6 py-4">
+<svg class="text-green-500" height="24" viewbox="0 0 60 24" width="60">
+<path d="M0 18 L10 18 L20 15 L30 12 L40 14 L50 8 L60 6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</td>
+<td class="px-6 py-4 text-green-500 font-medium">+7.9%</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="text-xs">Med</span>
+<div class="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-yellow-400 w-[78%] rounded-full"></div>
+</div>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4 font-medium text-slate-800 dark:text-white flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+<span class="material-icons-round text-slate-500 text-sm">headphones</span>
+</div>
+                                        AirPods Pro
+                                    </td>
+<td class="px-6 py-4">$180,500</td>
+<td class="px-6 py-4 text-primary font-semibold">$175,000</td>
+<td class="px-6 py-4">
+<svg class="text-red-400" height="24" viewbox="0 0 60 24" width="60">
+<path d="M0 10 L10 8 L20 12 L30 15 L40 14 L50 18 L60 20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</td>
+<td class="px-6 py-4 text-red-400 font-medium">-3.0%</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<span class="text-xs">High</span>
+<div class="w-16 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-green-500 w-[88%] rounded-full"></div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Spacer for bottom scrolling -->
+<div class="h-8"></div>
+</div>
+</main>
+</body></html>
