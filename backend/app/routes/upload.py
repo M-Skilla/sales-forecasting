@@ -13,6 +13,9 @@ async def upload_csv(file: UploadFile = File(...)):
     """
     Upload a CSV file with sales data.
     Expected columns: 'date', 'sales'
+    
+    Note: Uses a fixed filename for simplicity. In production, implement
+    user sessions or unique filenames to handle concurrent uploads.
     """
     # Validate file extension
     if not file.filename.endswith('.csv'):
