@@ -4,6 +4,16 @@ from prophet import Prophet
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 
+def _convert_freq(freq):
+    """Convert frequency to pandas-compatible format."""
+    freq_map = {
+        'M': 'ME',  # Month end
+        'D': 'D',   # Daily
+        'W': 'W',   # Weekly
+    }
+    return freq_map.get(freq, freq)
+
+
 def run_prophet_forecast(df, periods, freq):
     """
     Run Prophet forecast on the provided dataframe.
@@ -47,7 +57,8 @@ def run_prophet_forecast(df, periods, freq):
     model_full.fit(df)
     
     # Create future dataframe
-    future = model_full.make_future_dataframe(periods=periods, freq=freq)
+    pandas_freq = _convert_freq(freq)
+    future = model_full.make_future_dataframe(periods=periods, freq=pandas_freq)
     forecast = model_full.predict(future)
     
     # Get only future predictions (exclude historical)

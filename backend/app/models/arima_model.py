@@ -4,6 +4,16 @@ from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 
+def _convert_freq(freq):
+    """Convert frequency to pandas-compatible format."""
+    freq_map = {
+        'M': 'ME',  # Month end
+        'D': 'D',   # Daily
+        'W': 'W',   # Weekly
+    }
+    return freq_map.get(freq, freq)
+
+
 def run_arima_forecast(df, periods, freq, order=(1, 1, 1)):
     """
     Run ARIMA forecast on the provided dataframe.
@@ -50,7 +60,8 @@ def run_arima_forecast(df, periods, freq, order=(1, 1, 1)):
     
     # Generate future dates
     last_date = df.index[-1]
-    future_dates = pd.date_range(start=last_date, periods=periods + 1, freq=freq)[1:]
+    pandas_freq = _convert_freq(freq)
+    future_dates = pd.date_range(start=last_date, periods=periods + 1, freq=pandas_freq)[1:]
     
     # Prepare results
     results = []
