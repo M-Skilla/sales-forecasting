@@ -1,0 +1,9 @@
+fastapi[all]
+uvicorn
+pandas
+statsmodels
+prophet
+scikit-learn
+python-multipart
+joblib
+numpy
