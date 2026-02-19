@@ -9,8 +9,9 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://frontend:3000",
+        "https://sales-forecasting.vercel.app",  # your actual Vercel URL
     ],
-    allow_origin_regex=r"https://.*\.app\.github\.dev",  # Covers Codespaces dynamic URLs
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
