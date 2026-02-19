@@ -68,7 +68,7 @@ export default function ForecastChart({ data, metrics, modelUsed }: ForecastChar
       )}
 
       {/* Chart */}
-      <div className="flex-1 w-full min-h-[350px]">
+      <div className="w-full h-[400px]">
         {hasData ? (
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 40 }}>
