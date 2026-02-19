@@ -9,7 +9,9 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push("/");
+    // Simple authentication - just set a flag in localStorage
+    localStorage.setItem("isAuthenticated", "true");
+    router.push("/dashboard");
   };
 
   return (
