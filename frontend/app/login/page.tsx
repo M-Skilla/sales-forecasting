@@ -9,7 +9,9 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple authentication - just set a flag in localStorage
+    // NOTE: This is a simple demonstration authentication system
+    // In production, this should validate credentials against a backend API
+    // and use secure session management instead of localStorage
     localStorage.setItem("isAuthenticated", "true");
     router.push("/dashboard");
   };
